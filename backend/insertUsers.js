@@ -15,7 +15,7 @@ async function insertUser() {
 
         const [exist] = await connection.execute(
             'SELECT id FROM users WHERE username = ?',
-            ['tk2']
+            ['tk4']
         );
         if (exist.length > 0) {
             console.log('❌ Username đã tồn tại!');
