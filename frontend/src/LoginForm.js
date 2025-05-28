@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-function LoginForm({ onLogin }) {
+import api from "./axios/api";
+
+function LoginForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
     const [listUser, setListUser] = useState([]);
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get("http://localhost:8000/api/get-all-users");
+                const response = await api.get("/get-all-users");
                 setListUser(response.data.users || []);
             } catch (error) {
                 console.error("Error fetching users:", error);
@@ -18,15 +18,34 @@ function LoginForm({ onLogin }) {
         fetchUsers();
     }, []);
 
+    const handleCreateUser = async (e) => {
+    if (!email || !password) {
+        alert("Vui lòng nhập đầy đủ thông tin");
+        return;
+    }
+    try {
+        const response = await api.post(
+            `/create-new-user?username=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+        );
+        if (response.data.errCode === 0) {
+            alert("Tạo người dùng thành công");
+            setEmail("");
+            setPassword("");
+            const updatedUsers = [...listUser, { id: response.data.userId, username: email, password: password }];
+            setListUser(updatedUsers);
+        } else {
+            alert(response.data.errMessage);
+        }
+    } catch (error) {
+        console.error("Error creating user:", error);
+        alert("Đã xảy ra lỗi khi tạo người dùng");
+    }
+};
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onLogin({ email, password });
-    };
 
     return (
         <div>
-            <form onSubmit={handleSubmit} className="max-w-sm mx-auto p-6 shadow-md rounded bg-white mt-10">
+            <form className="max-w-sm mx-auto p-6 shadow-md rounded bg-white mt-10">
                 <h2 className="text-xl font-bold mb-4 text-center">Đăng nhập</h2>
                 <input
                     type="email"
@@ -44,7 +63,7 @@ function LoginForm({ onLogin }) {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <button type="submit" className="bg-blue-500 text-white p-2 rounded w-full hover:bg-blue-600">
+                <button onClick={()=>handleCreateUser()} type="submit" className="bg-blue-500 text-white p-2 rounded w-full hover:bg-blue-600">
                     Thêm
                 </button>
             </form>

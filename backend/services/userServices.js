@@ -20,6 +20,9 @@ let getAllUser = async () => {
 
 let createNewUser = async (data) => {
     try {
+        if (!data || !data.username || !data.password) {
+            throw new Error('Missing username or password');
+        }
         const connection = await mysql.createConnection({
             host: process.env.DB_HOST,
             port: process.env.DB_PORT,

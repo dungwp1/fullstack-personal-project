@@ -9,12 +9,20 @@ let getAllUsers = async (req, res) => {
         users,
     });
 };
-
+  
 let createNewUser = async (req, res) => {
-    let message = await userService.createNewUser(req.body);
-    console.log(message);
-    return res.status(200).json(message);
-}   
+    try {
+        // Lấy dữ liệu từ query thay vì body
+        let data = {
+            username: req.query.username,
+            password: req.query.password
+        };
+        let result = await userService.createNewUser(data);
+        return res.status(200).json(result);
+    } catch (err) {
+        return res.status(500).json({ errCode: 1, errMessage: err.message });
+    }
+};
 
 export default {
     getAllUsers,
