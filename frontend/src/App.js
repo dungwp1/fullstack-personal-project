@@ -1,11 +1,13 @@
 import React from 'react';
+import { Routes, Route, Navigate } from "react-router-dom";
 import LoginForm from './LoginForm';
+import HomeScreen from './HomeScreen';
 function App() {
   return (
-    <div>
-      <h1>Welcome to My Fullstack Personal Project</h1>
-      <LoginForm />
-    </div>
+    <Routes>
+      <Route path="/login" element={<LoginForm />} />
+      <Route path="/home" element={<HomeScreen />} />
+    </Routes>
   );
 }
 

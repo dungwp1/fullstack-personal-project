@@ -9,7 +9,7 @@ let getAllUsers = async (req, res) => {
         users,
     });
 };
-  
+
 let createNewUser = async (req, res) => {
     try {
         // Lấy dữ liệu từ query thay vì body
@@ -24,7 +24,21 @@ let createNewUser = async (req, res) => {
     }
 };
 
+let handleLogin = async (req, res) => {
+    try {
+        let { username, password } = req.body;
+        if (!username || !password) {
+            return res.status(400).json({ errCode: 1, errMessage: 'Missing input parameters' });
+        }
+        let userData = await userService.handleUserLogin(username, password);
+        return res.status(200).json(userData);
+    } catch (err) {
+        return res.status(500).json({ errCode: 1, errMessage: err.message });
+    }
+};
+
 export default {
     getAllUsers,
     createNewUser,
+    handleLogin
 };
