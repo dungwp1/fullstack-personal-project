@@ -1,4 +1,4 @@
-import userService from '../services/userServices.js';
+import userService from '../services/userService.js';
 
 let getAllUsers = async (req, res) => {
     let users = await userService.getAllUser();

@@ -1,12 +1,12 @@
-import categoryServices from '../services/categoryServices.js';
+import categoryService from '../services/categoryService.js';
 
 let getAllCategories = async (req, res) => {
-    let users = await categoryServices.getAllCategories();
-    console.log(users);
+    let data = await categoryService.getAllCategories();
+    console.log(data);
     return res.status(200).json({
         errCode: 0,
         errMessage: 'get all categories ok',
-        users,
+        data,
     });
 };
 
