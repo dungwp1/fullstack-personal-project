@@ -1,4 +1,6 @@
 import mysql from 'mysql2/promise';
+import bcrypt from 'bcrypt';
+const saltRounds = 10;
 
 let getAllUser = async () => {
     try {
@@ -32,9 +34,12 @@ let createNewUser = async (data) => {
         });
 
         const { username, password } = data;
+        const hashedPassword = await bcrypt.hash(password, saltRounds); // Hash mật khẩu
+        console.log('Hashed Password:', hashedPassword);
+
         const [result] = await connection.execute(
             'INSERT INTO users (username, password) VALUES (?, ?)',
-            [username, password]
+            [username, hashedPassword]
         );
         await connection.end();
         return { errCode: 0, errMessage: 'User created successfully', userId: result.insertId };

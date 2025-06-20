@@ -1,13 +1,11 @@
-import express from "express";
-import userController from "../controllers/userController.js";
+import userRoutes from './users.js';
+import categoryRoutes from './catergories.js';
+import express from 'express';
 
-let router = express.Router();
+const initWebRoutes = (app) => {
+    app.use('/api/users', userRoutes);
+    app.use('/api/categories', categoryRoutes);
 
-let initWebRoutes = (app) => {
-    router.get('/api/get-all-users', userController.getAllUsers);
-    router.post('/api/create-new-user', userController.createNewUser);
-    router.post('/api/login', userController.handleLogin);
-    return app.use("/", router);
 };
 
 export default initWebRoutes;
