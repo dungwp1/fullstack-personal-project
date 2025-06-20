@@ -10,7 +10,7 @@ function LoginForm() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await api.get("/get-all-users");
+                const response = await api.get("/api/users/get-all-users");
                 setListUser(response.data.users || []);
             } catch (error) {
                 console.error("Error fetching users:", error);
@@ -26,7 +26,7 @@ function LoginForm() {
         }
         try {
             const response = await api.post(
-                `/create-new-user?username=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+                `/api/users/create-new-user?username=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
             );
             if (response.data.errCode === 0) {
                 alert("Tạo người dùng thành công");
@@ -51,7 +51,7 @@ function LoginForm() {
             return;
         }
         try {
-            const response = await api.post("/login", {
+            const response = await api.post("/api/users/login", {
                 username: email,
                 password: password
             });

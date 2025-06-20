@@ -85,17 +85,23 @@ const AddItem = ({ onAdd }) => {
     };
 
     return (
-        <div className="max-w-2xl mx-auto mt-10 p-8 bg-white shadow-xl rounded-2xl border border-gray-200">
-            <h2 className="text-3xl font-extrabold mb-8 text-blue-700 text-center">Thêm sản phẩm mới</h2>
-            <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Chọn loại thiết bị */}
+        <div className="max-w-4xl mx-auto mt-16 px-8 py-10 bg-white rounded-2xl shadow-xl border border-gray-200">
+            <h2 className="text-3xl font-bold text-blue-700 text-center mb-10">
+                Thêm sản phẩm mới
+            </h2>
+
+            <form onSubmit={handleSubmit} className="space-y-8">
+
+                {/* Loại thiết bị */}
                 <div>
-                    <label className="block text-base font-semibold text-gray-700 mb-1">Loại thiết bị</label>
+                    <label className="block text-base font-medium text-gray-700 mb-2">
+                        Loại thiết bị
+                    </label>
                     <select
                         value={selectedCategoryId}
-                        onChange={(event) => handleCategoryChange(event)}
+                        onChange={handleCategoryChange}
                         required
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                         <option value="">-- Chọn loại thiết bị --</option>
                         {categories.map((cat) => (
@@ -103,14 +109,18 @@ const AddItem = ({ onAdd }) => {
                         ))}
                     </select>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+
+                {/* Hãng - Thiết bị - Giá: cùng một hàng */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Hãng</label>
+                        <label className="block text-base font-medium text-gray-700 mb-2">
+                            Hãng
+                        </label>
                         <select
                             value={selectedBrandId}
-                            onChange={(event) => handleBrandChange(event)}
+                            onChange={handleBrandChange}
                             required
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                             <option value="">-- Chọn hãng --</option>
                             {brands.map((item) => (
@@ -119,12 +129,14 @@ const AddItem = ({ onAdd }) => {
                         </select>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Thiết bị</label>
+                        <label className="block text-base font-medium text-gray-700 mb-2">
+                            Thiết bị
+                        </label>
                         <select
                             value={selectedDevice}
-                            onChange={(event) => handleDeviceChange(event)}
+                            onChange={handleDeviceChange}
                             required
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                             <option value="">-- Chọn thiết bị --</option>
                             {devices.map((item) => (
@@ -133,57 +145,50 @@ const AddItem = ({ onAdd }) => {
                         </select>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Màu sắc</label>
+                        <label className="block text-base font-medium text-gray-700 mb-2">Giá bán</label>
                         <input
-                            name="Màu sắc"
-                            placeholder="Màu sắc"
-                            value={color}
-                            onChange={handleChange}
-                            required
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Dung lượng</label>
-                        <input
-                            name="Dung lượng"
-                            placeholder="Dung lượng"
-                            value={capacity}
-                            onChange={handleChange}
-                            required
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Giá bán</label>
-                        <input
-                            name="Giá bán"
-                            placeholder="Giá bán"
+                            type="number"
+                            name="price"
+                            placeholder="Nhập giá bán"
                             value={price}
-                            onChange={handleChange}
+                            onChange={(e) => setPrice(e.target.value)}
                             required
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
-                        />
-                    </div>
-                    <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Thông tin thêm</label>
-                        <input
-                            name="Thông tin thêm"
-                            placeholder="Thông tin thêm"
-                            value={note}
-                            onChange={handleChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
                 </div>
-                <button
-                    type="submit"
-                    className="w-full py-3 mt-4 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-blue-700 transition"
-                >
-                    Thêm sản phẩm
-                </button>
+
+                {/* Mô tả: 1 hàng riêng, textarea co giãn */}
+                <div>
+                    <label className="block text-base font-medium text-gray-700 mb-2">
+                        Thông tin mô tả
+                    </label>
+                    <textarea
+                        name="note"
+                        placeholder="Thông tin mô tả"
+                        value={note}
+                        onChange={(e) => setNote(e.target.value)}
+                        rows={2}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none overflow-hidden transition-all duration-200"
+                        onInput={(e) => {
+                            e.target.style.height = 'auto';
+                            e.target.style.height = e.target.scrollHeight + 'px';
+                        }}
+                    />
+                </div>
+
+                {/* Nút submit */}
+                <div>
+                    <button
+                        type="submit"
+                        className="w-full py-3 bg-blue-600 text-white text-lg font-semibold rounded-lg shadow hover:bg-blue-700 transition-all duration-300"
+                    >
+                        Thêm sản phẩm
+                    </button>
+                </div>
             </form>
         </div>
+
     );
 };
 
