@@ -7,13 +7,16 @@ const AddItem = ({ onAdd }) => {
     const [brands, setBrands] = useState([]);
     const [selectedBrandId, setSelectedBrandId] = useState('');
     const [devices, setDevices] = useState([]);
-    const [selectedDevice, setSelectedDevice] = useState('');
+    const [selectedDeviceId, setselectedDeviceId] = useState('');
 
-    const [quality, setQuality] = useState('');
-    const [color, setColor] = useState('');
-    const [capacity, setCapacity] = useState('');
     const [price, setPrice] = useState('');
     const [note, setNote] = useState('');
+
+    const [imageFiles, setImageFiles] = useState([]);
+    const [imagePreviews, setImagePreviews] = useState([]);
+    const [selectedPreview, setSelectedPreview] = useState(null);
+
+
 
     useEffect(() => {
         // Fetch categories from the API
@@ -31,15 +34,28 @@ const AddItem = ({ onAdd }) => {
         fetchCategories();
     }, []);
     useEffect(() => {
-        console.log('✅ Categories changed:', categories);
-    }, [categories]);
-
-    useEffect(() => {
-        console.log('✅ Brands changed:', brands);
-    }, [brands]);
-    useEffect(() => {
-        console.log('✅ Device changed:', devices);
-    }, [devices]);
+        if (categories.length) {
+            console.log('✅ Categories changed:', categories);
+        }
+        if (brands.length) {
+            console.log('✅ Brands changed:', brands);
+        }
+        if (devices.length) {
+            console.log('✅ Devices changed:', devices);
+        }
+        if (price.length) {
+            console.log('✅ Price changed:', price);
+        }
+        if (note.length) {
+            console.log('✅ Note changed:', note);
+        }
+        if (imageFiles.length) {
+            console.log('✅ Image files changed:', imageFiles);
+        }
+        if (imagePreviews.length) {
+            console.log('✅ Image previews changed:', imagePreviews);
+        }
+    }, [categories, brands, devices, price, note, imageFiles, imagePreviews]);
 
     const handleChange = (e) => {
         alert('not build yet', e);
@@ -64,7 +80,7 @@ const AddItem = ({ onAdd }) => {
         setSelectedBrandId(brandId);
         console.log('Brand ID:', brandId);
         try {
-            const response = await api.get(`/api/products/get-product-by-id/${brandId}`);
+            const response = await api.get(`/api/devices/get-device-by-id/${brandId}`);
             const data = response.data.data;
             console.log('Devices for selected brand:', data);
             setDevices(data);
@@ -75,14 +91,89 @@ const AddItem = ({ onAdd }) => {
 
     const handleDeviceChange = async (event) => {
         const deviceId = event.target.value;
-        setSelectedDevice(deviceId);
+        setselectedDeviceId(deviceId);
         console.log('Device ID:', deviceId);
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // ...handle submit logic...
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files);
+        setImageFiles(files); // lưu file để upload
+
+        const previews = [];
+
+        files.forEach(file => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                previews.push(reader.result);
+                // update khi đã có preview của toàn bộ ảnh
+                if (previews.length === files.length) {
+                    setImagePreviews(previews);
+                }
+            };
+            reader.readAsDataURL(file);
+        });
     };
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+
+        // 🧩 Append text fields
+        formData.append('categoryId', selectedCategoryId);
+        formData.append('brandId', selectedBrandId);
+        formData.append('deviceId', selectedDeviceId);
+        formData.append('price', price);
+        formData.append('note', note);
+        console.log('Form data:', {
+            categoryId: selectedCategoryId,
+            brandId: selectedBrandId,
+            deviceId: selectedDeviceId,
+            price: price,
+            note: note,
+        });
+        // 🖼️ Append images (support multiple)
+        imageFiles.forEach((file, index) => {
+            formData.append('images', file); // key "images" là mảng file[]
+        });
+        console.log('Form data with images:', formData.getAll('images'));
+        // Kiểm tra xem có ảnh nào không
+        if (imageFiles.length === 0) {
+            alert('Vui lòng chọn ít nhất một ảnh sản phẩm.');
+            return;
+        }
+        // Gửi dữ liệu đến API
+        const data = {};
+        for (let [key, value] of formData.entries()) {
+            if (data[key]) {
+                // Nếu đã có key đó, đảm bảo là mảng
+                if (!Array.isArray(data[key])) {
+                    data[key] = [data[key]];
+                }
+                data[key].push(value);
+            } else {
+                data[key] = value;
+            }
+        }
+        console.log('✅ FormData dưới dạng object đầy đủ:', data);
+
+        try {
+            const response = await api.post('/api/items/create-item', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            console.log('✅ Tạo item thành công:', response.data);
+            alert('Thêm sản phẩm thành công!');
+            // Reset form nếu cần
+        } catch (error) {
+            console.error('❌ Lỗi khi tạo item:', error);
+            alert('Đã xảy ra lỗi khi thêm sản phẩm.');
+        }
+    };
+
 
     return (
         <div className="max-w-4xl mx-auto mt-16 px-8 py-10 bg-white rounded-2xl shadow-xl border border-gray-200">
@@ -133,7 +224,7 @@ const AddItem = ({ onAdd }) => {
                             Thiết bị
                         </label>
                         <select
-                            value={selectedDevice}
+                            value={selectedDeviceId}
                             onChange={handleDeviceChange}
                             required
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -176,7 +267,50 @@ const AddItem = ({ onAdd }) => {
                         }}
                     />
                 </div>
-
+                {/* Ảnh sản phẩm */}
+                <div>
+                    <label className="block text-base font-medium text-gray-700 mb-2">
+                        Ảnh sản phẩm
+                    </label>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={(e) => handleImageChange(e)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    />
+                </div>
+                {imagePreviews.length > 0 && (
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                        {imagePreviews.map((src, index) => (
+                            <img
+                                key={index}
+                                src={src}
+                                alt={`Ảnh ${index + 1}`}
+                                onClick={() => setSelectedPreview(src)}
+                                className="w-full h-32 object-cover rounded-lg border"
+                            />
+                        ))}
+                    </div>
+                )}
+                {selectedPreview && (
+                    <div
+                        className="fixed inset-0 z-50 bg-black bg-opacity-80 flex items-center justify-center"
+                        onClick={() => setSelectedPreview(null)} // click ra ngoài để đóng
+                    >
+                        <img
+                            src={selectedPreview}
+                            alt="Ảnh full"
+                            className="max-w-full max-h-full object-contain rounded-xl shadow-lg"
+                        />
+                        <button
+                            onClick={() => setSelectedPreview(null)}
+                            className="absolute top-6 right-6 text-white text-3xl font-bold bg-black bg-opacity-50 p-2 rounded-full hover:bg-opacity-70"
+                        >
+                            ×
+                        </button>
+                    </div>
+                )}
                 {/* Nút submit */}
                 <div>
                     <button
