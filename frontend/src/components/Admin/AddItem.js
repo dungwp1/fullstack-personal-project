@@ -8,6 +8,8 @@ const AddItem = ({ onAdd }) => {
     const [selectedBrandId, setSelectedBrandId] = useState('');
     const [devices, setDevices] = useState([]);
     const [selectedDeviceId, setselectedDeviceId] = useState('');
+    const [colors, setColors] = useState([]);
+    const [selectedColorId, setSelectedColorId] = useState('');
 
     const [price, setPrice] = useState('');
     const [note, setNote] = useState('');
@@ -246,6 +248,34 @@ const AddItem = ({ onAdd }) => {
                             required
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
+                    </div>
+                    <div>
+                        <label className="block text-base font-medium text-gray-700 mb-2">Màu sắc</label>
+                        <select
+                            value={selectedDeviceId}
+                            onChange={handleDeviceChange}
+                            required
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="">-- Chọn màu sắc --</option>
+                            {colors.map((item) => (
+                                <option key={item.id} value={item.id}>{item.name}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-base font-medium text-gray-700 mb-2">Dung lượng</label>
+                        <select
+                            value={selectedDeviceId}
+                            onChange={handleDeviceChange}
+                            required
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="">-- Chọn dung lượng --</option>
+                            {colors.map((item) => (
+                                <option key={item.id} value={item.id}>{item.name}</option>
+                            ))}
+                        </select>
                     </div>
                 </div>
 
