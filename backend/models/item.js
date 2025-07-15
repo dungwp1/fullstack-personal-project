@@ -30,9 +30,9 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'colorId',
                 as: 'color'
             });
-            Items.belongsTo(models.Capacities, {
-                foreignKey: 'capacityId',
-                as: 'capacity'
+            Items.belongsTo(models.Storages, {
+                foreignKey: 'storageId',
+                as: 'storage'
             });
         }
     }
@@ -42,8 +42,8 @@ module.exports = (sequelize, DataTypes) => {
         deviceId: DataTypes.INTEGER,
         colorId: DataTypes.INTEGER,
         ramId: DataTypes.INTEGER,
-        capacityId: DataTypes.INTEGER,
-        price: DataTypes.FLOAT,
+        storageId: DataTypes.INTEGER,
+        price: DataTypes.DECIMAL(10,0),
         note: DataTypes.TEXT
     }, {
         sequelize,

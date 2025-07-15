@@ -29,8 +29,22 @@ let createItem = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 }
+let getItemById = async (req, res) => {
+    try {
+        const itemId = req.params.id;
+        const item = await itemService.getItemById(itemId);
+        if (!item) {
+            return res.status(404).json({ error: 'Item not found' });
+        }
+        res.status(200).json({ data: item });
+    } catch (error) {
+        console.error('Get item by ID error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
 
 export default {
     getAllItems,
-    createItem
+    createItem,
+    getItemById
 };

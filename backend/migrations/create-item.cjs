@@ -21,8 +21,20 @@ module.exports = {
                 allowNull: false
             },
             price: {
-                type: Sequelize.FLOAT,
+                type: Sequelize.DECIMAL(10,0),
                 allowNull: false
+            },
+            colorId: {
+                type: Sequelize.INTEGER,
+                allowNull: true
+            },
+            ramId: {
+                type: Sequelize.INTEGER,
+                allowNull: true
+            },
+            storageId: {
+                type: Sequelize.INTEGER,
+                allowNull: true
             },
             note: {
                 type: Sequelize.TEXT,

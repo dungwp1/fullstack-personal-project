@@ -21,5 +21,6 @@ let router = express.Router();
 
 router.get('/get-all-items', itemController.getAllItems);
 router.post('/create-item', upload.array('images', 10), itemController.createItem);
+router.get('/get-item-by-id/:id', itemController.getItemById);
 
 export default router;

@@ -10,6 +10,10 @@ const AddItem = ({ onAdd }) => {
     const [selectedDeviceId, setselectedDeviceId] = useState('');
     const [colors, setColors] = useState([]);
     const [selectedColorId, setSelectedColorId] = useState('');
+    const [storages, setStorages] = useState([]);
+    const [selectedStorageId, setSelectedStorageId] = useState('');
+    const [ram, setRam] = useState([]);
+    const [selectedRamId, setSelectedRamId] = useState('');
 
     const [price, setPrice] = useState('');
     const [note, setNote] = useState('');
@@ -20,21 +24,32 @@ const AddItem = ({ onAdd }) => {
 
 
 
+    // Fetch categories and colors on mount
     useEffect(() => {
-        // Fetch categories from the API
-        const fetchCategories = async () => {
+        const fetchInitialData = async () => {
             try {
-                const response = await api.get('/api/categories/get-all-categories');
-                const data = response.data.data;
-                console.log('Check data:', data);
-                setCategories(data);
+                const [categoriesRes, ramRes, colorsRes, storagesRes] = await Promise.all([
+                    api.get('/api/categories/get-all-categories'),
+                    api.get('/api/ram/get-all-ram'),
+                    api.get('/api/colors/get-all-colors'),
+                    api.get('/api/storages/get-all-storages'),
+                ]);
+                setCategories(categoriesRes.data.data);
+                setRam(ramRes.data.data);
+                setColors(colorsRes.data.data);
+                setStorages(storagesRes.data.data);
+                console.log('Fetched categories:', categoriesRes.data.data);
+                console.log('Fetched RAM:', ramRes.data.data);
+                console.log('Fetched colors:', colorsRes.data.data);
+                console.log('Fetched storages:', storagesRes.data.data);
             } catch (error) {
-
-                console.error('Error fetching categories:', error);
+                console.error('Error fetching initial data:', error);
             }
         };
-        fetchCategories();
+        fetchInitialData();
     }, []);
+
+
     useEffect(() => {
         if (categories.length) {
             console.log('✅ Categories changed:', categories);
@@ -57,7 +72,16 @@ const AddItem = ({ onAdd }) => {
         if (imagePreviews.length) {
             console.log('✅ Image previews changed:', imagePreviews);
         }
-    }, [categories, brands, devices, price, note, imageFiles, imagePreviews]);
+        if (colors.length) {
+            console.log('✅ Colors changed:', colors);
+        }
+        if (storages.length) {
+            console.log('✅ Storages changed:', storages);
+        }
+        if (ram.length) {
+            console.log('✅ RAM changed:', ram);
+        }
+    }, [categories, brands, devices, price, note, imageFiles, imagePreviews, colors, storages, ram]);
 
     const handleChange = (e) => {
         alert('not build yet', e);
@@ -115,6 +139,23 @@ const AddItem = ({ onAdd }) => {
             reader.readAsDataURL(file);
         });
     };
+    const handleColorChange = (event) => {
+        const colorId = event.target.value;
+        setSelectedColorId(colorId);
+        console.log('Color ID:', colorId);
+    };
+
+    const handleStorageChange = (event) => {
+        const storageId = event.target.value;
+        setSelectedStorageId(storageId);
+        console.log('Storage ID:', storageId);
+    };
+
+    const handleRamChange = (event) => {
+        const ramId = event.target.value;
+        setSelectedRamId(ramId);
+        console.log('RAM ID:', ramId);
+    };
 
 
     const handleSubmit = async (e) => {
@@ -127,12 +168,18 @@ const AddItem = ({ onAdd }) => {
         formData.append('brandId', selectedBrandId);
         formData.append('deviceId', selectedDeviceId);
         formData.append('price', price);
+        formData.append('colorId', selectedColorId);
+        formData.append('storageId', selectedStorageId);
+        formData.append('ramId', selectedRamId);
         formData.append('note', note);
         console.log('Form data:', {
             categoryId: selectedCategoryId,
             brandId: selectedBrandId,
             deviceId: selectedDeviceId,
             price: price,
+            colorId: selectedColorId,
+            storageId: selectedStorageId,
+            ramId: selectedRamId,
             note: note,
         });
         // 🖼️ Append images (support multiple)
@@ -250,33 +297,48 @@ const AddItem = ({ onAdd }) => {
                         />
                     </div>
                     <div>
+                        <label className="block text-base font-medium text-gray-700 mb-2">RAM</label>
+                        <select
+                            value={selectedRamId}
+                            onChange={handleRamChange}
+                            required
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="">-- Chọn dung lượng RAM --</option>
+                            {ram.map((item) => (
+                                <option key={item.id} value={item.id}>{item.ram}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-base font-medium text-gray-700 mb-2">Bộ nhớ</label>
+                        <select
+                            value={selectedStorageId}
+                            onChange={handleStorageChange}
+                            required
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="">-- Chọn dung lượng bộ nhớ --</option>
+                            {storages.map((item) => (
+                                <option key={item.id} value={item.id}>{item.storage}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
                         <label className="block text-base font-medium text-gray-700 mb-2">Màu sắc</label>
                         <select
-                            value={selectedDeviceId}
-                            onChange={handleDeviceChange}
+                            value={selectedColorId}
+                            onChange={handleColorChange}
                             required
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                             <option value="">-- Chọn màu sắc --</option>
                             {colors.map((item) => (
-                                <option key={item.id} value={item.id}>{item.name}</option>
+                                <option key={item.id} value={item.id}>{item.color}</option>
                             ))}
                         </select>
                     </div>
-                    <div>
-                        <label className="block text-base font-medium text-gray-700 mb-2">Dung lượng</label>
-                        <select
-                            value={selectedDeviceId}
-                            onChange={handleDeviceChange}
-                            required
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                            <option value="">-- Chọn dung lượng --</option>
-                            {colors.map((item) => (
-                                <option key={item.id} value={item.id}>{item.name}</option>
-                            ))}
-                        </select>
-                    </div>
+                    
                 </div>
 
                 {/* Mô tả: 1 hàng riêng, textarea co giãn */}

@@ -2,14 +2,14 @@
 
 module.exports = {
     up: async (queryInterface, Sequelize) => {
-        await queryInterface.createTable('Capacities', {
+        await queryInterface.createTable('Storages', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            capacity: {
+            storage: {
                 type: Sequelize.STRING,
                 allowNull: true
             },
@@ -27,6 +27,6 @@ module.exports = {
     },
 
     down: async (queryInterface, Sequelize) => {
-        await queryInterface.dropTable('Capacities');
+        await queryInterface.dropTable('Storages');
     }
 };
