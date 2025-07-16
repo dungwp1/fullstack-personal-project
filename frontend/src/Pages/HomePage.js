@@ -48,11 +48,15 @@ const HomePage = () => {
                         key={item.itemId}
                         className="border border-blue-100 rounded-xl shadow-md hover:shadow-xl transition duration-200 p-5 bg-white flex flex-col "
                     >
-                        <div className='cursor-pointer' onClick={() => handleItemClick(item.itemId)}>
+                        <div
+                            className="cursor-pointer"
+                            onClick={() => handleItemClick(item.itemId)}
+                        >
+
                             <img
                                 src={`${process.env.REACT_APP_API_URL}${item.imageUrl[0]}`}
                                 alt="Product"
-                                className="w-full h-48 object-cover rounded-lg mb-4 border border-gray-200"
+                                className="w-full h-48 object-cover rounded-lg mb-4 border border-gray-200 hover:scale-105 transition-transform duration-200"
                             />
                             <div className="flex-1 flex flex-col gap-1">
                                 <p className="font-semibold text-lg text-blue-800 mb-1">{item.deviceName}</p>
@@ -72,18 +76,12 @@ const HomePage = () => {
                                 <p className="text-blue-700 font-medium text-base mt-2">
                                     Giá: <span className="text-gray-900">{item.price}₫</span>
                                 </p>
-                                <p className="text-gray-400 text-xs mt-2 italic">Ghi chú: {item.note}</p>
                             </div>
                         </div>
-
-
-
-
                         {item.imageUrl && item.imageUrl.length > 1 && (
                             <div className="flex flex-wrap gap-2 mt-3">
-                                {item.imageUrl.slice(0).map((img, idx) => (
+                                {item.imageUrl.map((img, idx) => (
                                     <img
-                                        key={idx}
                                         src={`${process.env.REACT_APP_API_URL}${img}`}
                                         alt={`preview-${idx}`}
                                         className="w-12 h-12 object-cover rounded border border-blue-50 hover:scale-105 transition"
@@ -91,6 +89,7 @@ const HomePage = () => {
                                 ))}
                             </div>
                         )}
+
                     </div>
                 ))}
             </div>

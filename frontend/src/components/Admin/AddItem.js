@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from "../../axios/api";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleXmark } from '@fortawesome/free-regular-svg-icons';
 
 const AddItem = ({ onAdd }) => {
     const [categories, setCategories] = useState([]);
@@ -139,6 +141,7 @@ const AddItem = ({ onAdd }) => {
             reader.readAsDataURL(file);
         });
     };
+
     const handleColorChange = (event) => {
         const colorId = event.target.value;
         setSelectedColorId(colorId);
@@ -338,7 +341,7 @@ const AddItem = ({ onAdd }) => {
                             ))}
                         </select>
                     </div>
-                    
+
                 </div>
 
                 {/* Mô tả: 1 hàng riêng, textarea co giãn */}
@@ -375,13 +378,19 @@ const AddItem = ({ onAdd }) => {
                 {imagePreviews.length > 0 && (
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                         {imagePreviews.map((src, index) => (
-                            <img
-                                key={index}
-                                src={src}
-                                alt={`Ảnh ${index + 1}`}
-                                onClick={() => setSelectedPreview(src)}
-                                className="w-full h-32 object-cover rounded-lg border"
-                            />
+                            <div className="relative group">
+                                <img
+                                    key={index}
+                                    src={src}
+                                    alt={`Ảnh ${index + 1}`}
+                                    onClick={() => setSelectedPreview(src)}
+                                    className="w-full h-32 object-cover rounded-lg border"
+                                />
+                                <FontAwesomeIcon icon={faCircleXmark}
+                                    className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition cursor-pointer hover:scale-110"
+                                    onClick={() => alert('Xóa ảnh chưa xây dựng')}
+                                />
+                            </div>
                         ))}
                     </div>
                 )}
